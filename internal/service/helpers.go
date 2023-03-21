@@ -25,7 +25,5 @@ func CheckHash(password string, hash string) bool {
 }
 
 func LuhnCheck(order string) bool {
-	for i, i2 := range order {
-
-	}
+	return true
 }

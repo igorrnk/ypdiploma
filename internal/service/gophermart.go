@@ -35,7 +35,7 @@ func NewGophermart(ctx context.Context, config *configs.ConfigType) (*Gophermart
 }
 
 func (gm *Gophermart) Run() error {
-	log.Info().Msg("HTTP Server is running.")
+
 	idleConnsClosed := make(chan struct{})
 	go func() {
 		sigint := make(chan os.Signal, 1)
@@ -47,6 +47,7 @@ func (gm *Gophermart) Run() error {
 		close(idleConnsClosed)
 	}()
 	defer gm.context.Done()
+	log.Info().Msg("HTTP Server is running.")
 	if err := gm.httpServer.ListenAndServe(); err != http.ErrServerClosed {
 		return err
 	}
