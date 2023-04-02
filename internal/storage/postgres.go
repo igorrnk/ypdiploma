@@ -164,6 +164,7 @@ func (storage *PostgresStorage) AddWithdraw(ctx context.Context, user *model.Use
 
 	_, err := storage.dbPool.Exec(ctx, insertWithdraw, user.ID, withdraw.Order, withdraw.Sum, withdraw.ProcessedAt)
 	if err != nil {
+		log.Error().Err(err)
 		return model.ErrDB
 	}
 	return nil
