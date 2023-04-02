@@ -6,6 +6,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/igorrnk/ypdiploma.git/internal/configs"
 	"github.com/igorrnk/ypdiploma.git/internal/model"
+	"github.com/rs/zerolog/log"
 	"net/http"
 )
 
@@ -22,9 +23,9 @@ func NewRestyClient(config *configs.ConfigType) *RestyClient {
 	return client
 }
 
-func (client *RestyClient) GetOrder(order *model.Order) error {
+func (client *RestyClient) UpdateOrder(order *model.Order) error {
 	url := fmt.Sprintf("%s/api/orders/%s", client.addressAccrual, order.Number)
-
+	log.Debug().Msg(url)
 	resp, err := client.client.R().Get(url)
 	if err != nil {
 		return model.ErrAccrual
@@ -43,6 +44,7 @@ func (client *RestyClient) GetOrder(order *model.Order) error {
 		if err != nil {
 			return model.ErrAccrual
 		}
+		log.Debug().Msgf("Order: %+V", order)
 	}
 	return nil
 }

@@ -18,7 +18,7 @@ func (updater *OrderUpdater) Run(ctx context.Context) {
 		for _, order := range orders {
 			updater.UpdateOrder(order)
 		}
-		time.Sleep(time.Second)
+		time.Sleep(100 * time.Millisecond)
 	}
 }
 
@@ -27,7 +27,7 @@ func (updater *OrderUpdater) GetOrders(ctx context.Context) ([]*model.Order, err
 }
 
 func (updater *OrderUpdater) UpdateOrder(order *model.Order) {
-	err := updater.Client.GetOrder(order)
+	err := updater.Client.UpdateOrder(order)
 	if err != nil {
 		return
 	}
