@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"errors"
+	"github.com/igorrnk/ypdiploma.git/internal/auth"
 	"github.com/igorrnk/ypdiploma.git/internal/model"
 
 	"io"
@@ -22,7 +23,7 @@ func (s *Server) PostRegister(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to decode body.", http.StatusBadRequest)
 		return
 	}
-	token, err := s.servicer.Registration(&user)
+	err = s.servicer.Registration(r.Context(), &user)
 	if errors.Is(err, model.ErrLoginOccupied) {
 		http.Error(w, "Unable to register a new user. The login is already occupied.", http.StatusConflict)
 		return
@@ -31,6 +32,6 @@ func (s *Server) PostRegister(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to register a new user.", http.StatusInternalServerError)
 		return
 	}
-	w.Header().Add("Authorization", token.Token)
+	w.Header().Add("Authorization", "Bearer "+auth.TokenByUser(&user))
 	w.WriteHeader(http.StatusOK)
 }

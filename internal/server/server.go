@@ -1,58 +1,56 @@
 package server
 
 import (
-	"context"
 	"github.com/go-chi/chi/v5"
+	"github.com/igorrnk/ypdiploma.git/internal/auth"
 	"github.com/igorrnk/ypdiploma.git/internal/configs"
 	"github.com/igorrnk/ypdiploma.git/internal/model"
-	"github.com/rs/zerolog/log"
 	"net/http"
-	"os"
-	"os/signal"
 )
 
 type Server struct {
 	http.Server
 	config   *configs.ServerConfigType
 	servicer model.Servicer
-	router   chi.Router
-	ctx      context.Context
 }
 
 func NewServer(config *configs.ServerConfigType, servicer model.Servicer) *Server {
 	server := &Server{
+		Server: http.Server{
+			Addr: config.ServerAddress,
+		},
 		config:   config,
 		servicer: servicer,
-		router:   chi.NewRouter(),
 	}
-	server.ctx = context.Background()
-	server.Addr = config.ServerAddress
-	server.Handler = server.router
-	server.router.Post("/api/user/register", server.PostRegister)
-	server.router.Post("/api/user/login", server.PostLogin)
-	server.router.Post("/api/user/orders", server.PostOrders)
-	server.router.Get("/api/user/orders", server.GetOrders)
+	server.Handler = newChiRouter(server)
 	return server
 }
 
-func (server *Server) Run() error {
-	log.Info().Msg("HTTP Server is running.")
-	idleConnsClosed := make(chan struct{})
-	go func() {
-		sigint := make(chan os.Signal, 1)
-		signal.Notify(sigint, os.Interrupt)
-		<-sigint
-		if err := server.Shutdown(server.ctx); err != nil {
-			log.Printf("Service.Run: http.Service.Shutdown: %v", err)
-		}
-		close(idleConnsClosed)
-	}()
-	defer server.ctx.Done()
-	if err := server.ListenAndServe(); err != http.ErrServerClosed {
-		return err
-	}
-	<-idleConnsClosed
-	server.Close()
-	log.Info().Msg("HTTP Server has been stopped.")
-	return nil
+func newChiRouter(s *Server) http.Handler {
+	r := chi.NewRouter()
+
+	// Public routes
+	r.Group(func(r chi.Router) {
+		r.Post("/api/user/register", s.PostRegister)
+		r.Post("/api/user/login", s.PostLogin)
+	})
+
+	r.Group(func(r chi.Router) {
+		r.Use(auth.AuthenticatorJWT)
+		r.Post("/api/user/orders", s.PostOrders)
+		r.Get("/api/user/orders", s.GetOrders)
+		r.Get("/api/user/balance", s.GetBalance)
+		r.Post("/api/user/balance/withdraw", s.PostWithdraw)
+		r.Get("/api/user/withdrawals", s.GetWithDrawals)
+	})
+	return r
+	/*
+		POST /api/user/register — регистрация пользователя;
+		POST /api/user/login — аутентификация пользователя;
+		POST /api/user/orders — загрузка пользователем номера заказа для расчёта;
+		GET /api/user/orders — получение списка загруженных пользователем номеров заказов, статусов их обработки и информации о начислениях;
+		GET /api/user/balance — получение текущего баланса счёта баллов лояльности пользователя;
+		POST /api/user/balance/withdraw — запрос на списание баллов с накопительного счёта в счёт оплаты нового заказа;
+		GET /api/user/withdrawals — получение информации о выводе средств с накопительного счёта пользователем.
+	*/
 }
