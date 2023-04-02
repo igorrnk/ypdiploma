@@ -126,7 +126,7 @@ func (gm *Gophermart) GetBalance(ctx context.Context, user *model.User) (*model.
 	if err != nil {
 		return nil, err
 	}
-	balance.Current = sum
+	balance.Current = sum - withdrawn
 	balance.Withdraw = withdrawn
 	return &balance, nil
 }
@@ -136,7 +136,7 @@ func (gm *Gophermart) AddWithdraw(ctx context.Context, user *model.User, withdra
 	if err != nil {
 		return model.ErrDB
 	}
-	if withdraw.Sum > balance.Current-balance.Withdraw {
+	if withdraw.Sum > balance.Current {
 		return model.ErrInsufFunds
 	}
 	withdraw.ProcessedAt = time.Now()
