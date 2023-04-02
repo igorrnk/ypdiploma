@@ -12,7 +12,7 @@ import (
 var hmacSampleSecret = []byte("SecretKey")
 
 type UserClaims struct {
-	UserId string `json:"user_id"`
+	UserID string `json:"user_id"`
 	jwt.RegisteredClaims
 }
 
@@ -66,9 +66,7 @@ func UserByToken(tokenString string) (*model.User, error) {
 		return nil, ErrWrongToken
 	}
 	if claims, ok := token.Claims.(*UserClaims); ok && token.Valid {
-		user.ID = claims.UserId
-	} else {
-
+		user.ID = claims.UserID
 	}
 	return &user, nil
 }

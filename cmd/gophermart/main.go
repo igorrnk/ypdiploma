@@ -15,7 +15,7 @@ func main() {
 	if err != nil {
 		log.Fatal().Msgf("Config error: %v", err)
 	}
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	zerolog.TimeFieldFormat = zerolog.TimeFieldFormat
 	zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	log.Info().Msgf("Config: %+v: ", config)
 

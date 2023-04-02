@@ -22,12 +22,12 @@ type ConfigType struct {
 
 func InitConfig() (*ConfigType, error) {
 	address := flag.String("a", "", "Run address")
-	databaseUri := flag.String("d", "", "Database URI")
+	databaseURI := flag.String("d", "", "Database URI")
 	accrualSysAddress := flag.String("r", "", "Accrual system address")
 	config := &ConfigType{
 		DBConfigType: DBConfigType{
 			DBDriverName: defaultDBConfig.DBDriverName,
-			DBUri:        *databaseUri,
+			DBUri:        *databaseURI,
 		},
 		ServerConfigType: ServerConfigType{
 			ServerAddress: *address,

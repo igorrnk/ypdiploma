@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/igorrnk/ypdiploma.git/internal/auth"
 	"github.com/igorrnk/ypdiploma.git/internal/configs"
 	"github.com/igorrnk/ypdiploma.git/internal/model"
@@ -31,11 +32,13 @@ func newChiRouter(s *Server) http.Handler {
 
 	// Public routes
 	r.Group(func(r chi.Router) {
+		r.Use(middleware.Logger)
 		r.Post("/api/user/register", s.PostRegister)
 		r.Post("/api/user/login", s.PostLogin)
 	})
 
 	r.Group(func(r chi.Router) {
+		r.Use(middleware.Logger)
 		r.Use(auth.AuthenticatorJWT)
 		r.Post("/api/user/orders", s.PostOrders)
 		r.Get("/api/user/orders", s.GetOrders)
