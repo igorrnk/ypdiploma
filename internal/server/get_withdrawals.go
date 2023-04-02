@@ -24,5 +24,6 @@ func (s *Server) GetWithDrawals(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to get withdraws.", http.StatusInternalServerError)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
 	_, err = w.Write(body)
 }
