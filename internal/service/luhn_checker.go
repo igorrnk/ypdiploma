@@ -14,7 +14,7 @@ func (lc LuhnChecker) Check(order string) bool {
 		if err != nil {
 			return false
 		}
-		if (k+1)%2 == 0 {
+		if (i+1)%2 == 0 {
 			if d >= 5 {
 				lunh += 2*d - 9
 			} else {
