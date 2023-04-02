@@ -19,7 +19,7 @@ type UserClaims struct {
 func AuthenticatorJWT(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authString := r.Header.Get("Authorization")
-		if len(authString) < 7 && authString[0:6] != "Bearer" {
+		if len(authString) < 7 || authString[0:6] != "Bearer" {
 			http.Error(w, "Wrong token type", http.StatusUnauthorized)
 			return
 		}
