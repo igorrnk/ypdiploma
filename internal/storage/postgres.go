@@ -34,9 +34,9 @@ const (
 
 	selectSumAccrual   string = `SELECT sum(accrual) FROM orders WHERE user_id = $1`
 	selectSumWithdrawn string = `SELECT sum(sum) FROM withdrawals WHERE user_id = $1`
-	insertWithdraw     string = `INSERT INTO withdrawals(user_id, order_id, sum, processed_at)
+	insertWithdraw     string = `INSERT INTO withdrawals(user_id, order_num, sum, processed_at)
 		VALUES ($1, $2, $3, $4)`
-	selectWithdraws string = `SELECT order_id, sum, processed_at FROM withdrawals
+	selectWithdraws string = `SELECT order_num, sum, processed_at FROM withdrawals
 		WHERE user_id = $1 ORDER BY processed_at DESC`
 )
 
@@ -161,16 +161,8 @@ func (storage *PostgresStorage) GetSumWithdrawn(ctx context.Context, user *model
 }
 
 func (storage *PostgresStorage) AddWithdraw(ctx context.Context, user *model.User, withdraw *model.Withdraw) error {
-	var userID int32
-	var orderID int32
-	err := storage.dbPool.QueryRow(ctx, selectUserOrder, withdraw.Order).Scan(&userID, &orderID)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return model.ErrOrderNumber
-	}
-	if user.ID != fmt.Sprint(userID) {
-		return model.ErrOrderNumber
-	}
-	_, err = storage.dbPool.Exec(ctx, insertWithdraw, userID, orderID, withdraw.Sum, withdraw.ProcessedAt)
+
+	_, err := storage.dbPool.Exec(ctx, insertWithdraw, user.ID, withdraw.Order, withdraw.Sum, withdraw.ProcessedAt)
 	if err != nil {
 		return model.ErrDB
 	}

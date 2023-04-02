@@ -140,6 +140,10 @@ func (gm *Gophermart) AddWithdraw(ctx context.Context, user *model.User, withdra
 		return model.ErrInsufFunds
 	}
 	withdraw.ProcessedAt = time.Now()
+	err = gm.AddOrder(ctx, user, withdraw.Order)
+	if err != nil {
+		return err
+	}
 	return gm.storage.AddWithdraw(ctx, user, withdraw)
 }
 

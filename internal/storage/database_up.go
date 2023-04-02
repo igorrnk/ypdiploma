@@ -35,15 +35,12 @@ CREATE TABLE IF NOT EXISTS withdrawals
 (
     draw_id integer DEFAULT nextval('withdrawals_draw_id_seq') PRIMARY KEY,
     user_id integer,
-    order_id integer,
+    order_num text,
     sum integer,
     processed_at timestamp,
     CONSTRAINT fk_user
         FOREIGN KEY(user_id)
-            REFERENCES users(user_id),
-    CONSTRAINT fk_order
-        FOREIGN KEY(order_id)
-            REFERENCES orders(order_id)
+            REFERENCES users(user_id)
 );
 ALTER SEQUENCE withdrawals_draw_id_seq OWNED BY withdrawals.draw_id;
 CREATE INDEX IF NOT EXISTS idx_withdrawals_user
