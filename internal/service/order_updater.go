@@ -36,8 +36,17 @@ func (updater *OrderUpdater) UpdateOrder(ctx context.Context, order *model.Order
 	if err != nil {
 		return
 	}
+	switch order.Status {
+	case "REGISTERED", "PROCESSING":
+		order.Status = model.ProcessingStatus
+	case "INVALID":
+		order.Status = model.InvalidStatus
+	case "PROCESSED":
+		order.Status = model.ProcessedStatus
+	}
 	err = updater.Storage.UpdateOrder(ctx, order)
 	if err != nil {
 		return
 	}
+
 }

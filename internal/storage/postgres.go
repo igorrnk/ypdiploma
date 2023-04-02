@@ -30,7 +30,7 @@ const (
     	WHERE user_id = $1 ORDER BY uploaded_at DESC`
 	selectAllOrders string = `SELECT number FROM orders 
     	WHERE status IN ('NEW', 'PROCESSING') ORDER BY uploaded_at`
-	updateOrder string = `UPDATE orders SET status = $2 WHERE number = $1;`
+	updateOrder string = `UPDATE orders SET status = $2, accrual = $3 WHERE number = $1;`
 
 	selectSumAccrual   string = `SELECT sum(accrual) FROM orders WHERE user_id = $1`
 	selectSumWithdrawn string = `SELECT sum(sum) FROM withdrawals WHERE user_id = $1`
@@ -130,7 +130,7 @@ func (storage *PostgresStorage) GetAllOrders(ctx context.Context) (orders []*mod
 }
 
 func (storage *PostgresStorage) UpdateOrder(ctx context.Context, order *model.Order) error {
-	_, err := storage.dbPool.Exec(ctx, updateOrder, order.Number, order.Status)
+	_, err := storage.dbPool.Exec(ctx, updateOrder, order.Number, order.Status, order.Accrual)
 	if err != nil {
 		return model.ErrDB
 	}
