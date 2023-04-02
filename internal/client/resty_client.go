@@ -44,7 +44,7 @@ func (client *RestyClient) UpdateOrder(order *model.Order) error {
 		if err != nil {
 			return model.ErrAccrual
 		}
-		log.Debug().Msgf("Order: %+V", order)
+		log.Debug().Msgf("Order: %+v", order)
 	}
 	return nil
 }
