@@ -26,6 +26,13 @@ type orderJSON struct {
 	UploadedAt string  `json:"uploaded_at"`
 }
 
+type orderJSON2 struct {
+	Number     string  `json:"order"`
+	Status     string  `json:"status"`
+	Accrual    float64 `json:"accrual,omitempty"`
+	UploadedAt string  `json:"uploaded_at"`
+}
+
 func (order *Order) MarshalJSON() ([]byte, error) {
 	alias := &orderJSON{
 		Number: order.Number,
@@ -41,7 +48,7 @@ func (order *Order) MarshalJSON() ([]byte, error) {
 }
 
 func (order *Order) UnmarshalJSON(bytes []byte) error {
-	alias := &orderJSON{}
+	alias := &orderJSON2{}
 	if err := json.Unmarshal(bytes, alias); err != nil {
 		return err
 	}
