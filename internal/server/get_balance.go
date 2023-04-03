@@ -3,12 +3,14 @@ package server
 import (
 	"encoding/json"
 	"github.com/igorrnk/ypdiploma.git/internal/model"
+	"github.com/rs/zerolog/log"
 	"net/http"
 )
 
 func (s *Server) GetBalance(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("User").(*model.User)
 	balance, err := s.servicer.GetBalance(r.Context(), user)
+	log.Debug().Msgf("Balance: %+v", balance)
 	var body []byte
 	if body, err = json.Marshal(balance); err != nil {
 		http.Error(w, "Unable to decode balance.", http.StatusInternalServerError)

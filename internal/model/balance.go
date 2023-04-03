@@ -9,7 +9,7 @@ type Balance struct {
 
 type balanceJSON struct {
 	Current  float64 `json:"current"`
-	Withdraw float64 `json:"withdraw"`
+	Withdraw float64 `json:"withdrawn"`
 }
 
 func (balance *Balance) MarshalJSON() ([]byte, error) {
