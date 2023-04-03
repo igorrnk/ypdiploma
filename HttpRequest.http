@@ -1,0 +1,43 @@
+### Registration
+POST localhost:8080/api/user/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "login": "<login2>",
+  "password": "<password2>"
+}
+
+### Login
+POST localhost:8080/api/user/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "login": "<login2>",
+  "password": "<password2>"
+}
+
+### Post order
+POST localhost:8080/api/user/orders HTTP/1.1
+Content-Type: text/plain
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMSIsImV4cCI6MTY4MDYwOTAwNn0.tqtdPaHag3d3u0q98woGz8EgGWkqOblg1LYoTBK3Udc
+
+22245678903
+
+### Get order
+GET localhost:8080/api/user/orders HTTP/1.1
+Content-Type: text/plain
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMSIsImV4cCI6MTY4MDYwOTAwNn0.tqtdPaHag3d3u0q98woGz8EgGWkqOblg1LYoTBK3Udc
+
+### Get balance
+GET localhost:8080/api/user/balance HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMSIsImV4cCI6MTY4MDYwOTAwNn0.tqtdPaHag3d3u0q98woGz8EgGWkqOblg1LYoTBK3Udc
+
+### Post withdraw
+POST localhost:8080/api/user/balance/withdraw HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMSIsImV4cCI6MTY4MDYwOTAwNn0.tqtdPaHag3d3u0q98woGz8EgGWkqOblg1LYoTBK3Udc
+
+{
+  "order": "12345678911",
+  "sum": 10.24
+}

@@ -1,0 +1,35 @@
+services:
+  postgresql:
+    container_name: postgres_db
+    image: postgres:13-alpine
+    restart: always
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: gophermart
+    networks:
+      - gophermart
+
+  api:
+    container_name: gophermart_api
+    depends_on:
+      - postgresql
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    networks:
+      - gophermart
+    ports:
+      - '5590:5590'
+
+networks:
+  gophermart:
+    driver: bridge
+
+volumes:
+  dbdata:
